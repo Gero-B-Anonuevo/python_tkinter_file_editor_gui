@@ -1,38 +1,54 @@
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox
 
 file_address = ""
 upper_form = ""
+list_form = ""
 
 def open_file():
     global file_address
     global list_form
-    file_address = filedialog.askopenfile(initialdir="/codes/oop", title="Select a file", filetypes=(("Text files", "*.txt"),("All files", "*.*")))
-    if file_address: file_address = file_address.name
-    read_file = open(f"{file_address}", "r")
-    list_form = read_file.readlines()
-    label.config(text=f"{''.join(list_form)}")
-    read_file.close()
+    if list_form != "":
+        if not tk.messagebox.askokcancel(title="Do you want to open another file?", message="Unsaved changes to the current file will be lost. Do you want to continue?"):
+            return None
+    try:
+        file_address = filedialog.askopenfile(initialdir="/codes/oop", title="Select a file", filetypes=(("Text files", "*.txt"),("All files", "*.*")))
+        if file_address: file_address = file_address.name
+        read_file = open(f"{file_address}", "r")
+        list_form = read_file.readlines()
+        label.config(text=f"{''.join(list_form)}")
+        read_file.close()
+    except FileNotFoundError:
+        pass
 
 def upper_file():
     global list_form
     global new_list
     new_list = []
-    read_file = open(f"{file_address}", "r")
-    list_form = read_file.readlines()
-    for element in range(len(list_form)):
-        global upper_form
-        upper_form = list_form[element].upper()
-        new_list.append(upper_form)
-    label.config(text=f"{''.join(new_list)}")
-    read_file.close()
+    try:
+        read_file = open(f"{file_address}", "r")
+        list_form = read_file.readlines()
+        for element in range(len(list_form)):
+            global upper_form
+            upper_form = list_form[element].upper()
+            new_list.append(upper_form)
+        label.config(text=f"{''.join(new_list)}")
+        read_file.close()
+    except FileNotFoundError:
+        tk.messagebox.showerror(title="No File Is Open", message="No file currently selected by the app")
+    else:
+        tk.messagebox.showinfo(title="Notice", message="Changes of the file must be saved.")
 
 def save_file():
-    write_file = open(f"{file_address}", "w")
-    for element in range(len(list_form)):
-        write_file.write(new_list[element])
-    write_file.close()
-    label.config(text="File saved.")
+    try:
+        write_file = open(f"{file_address}", "w")
+        for element in range(len(list_form)):
+            write_file.write(new_list[element])
+        write_file.close()
+        label.config(text="File saved.")
+    except FileNotFoundError:
+        tk.messagebox.showerror(title="No File Is Open", message="No file currently selected by the app")
 
 def help_option():
     label.config(text='''All the menu selections are at the top. In the File menu,\n
@@ -44,6 +60,10 @@ def about_option():
     label.config(text='''This app is intended to be used to edit files,\n
                  specifically to turn uppercase the contents of the selected file.\n
                  This app can access files and edit the contents of the file using python programming.''')
+
+def quit_func():
+    if tk.messagebox.askokcancel(title="Ready to quit?", message="Are you sure to quit? Unsaved changes will be lost."):
+        main_window.quit()
 
 main_window = tk.Tk()
 main_window.title("File Editor")
@@ -62,7 +82,7 @@ file_menu = tk.Menu(main_menu)
 main_menu.add_cascade(label="File", menu=file_menu)
 file_menu.add_command(label="Open", command= open_file)
 file_menu.add_command(label="Save", command=save_file)
-file_menu.add_command(label="Quit", command=exit)
+file_menu.add_command(label="Quit", command=quit_func)
 
 help_menu = tk.Menu(main_menu)
 main_menu.add_cascade(label="Help", menu=help_menu)
