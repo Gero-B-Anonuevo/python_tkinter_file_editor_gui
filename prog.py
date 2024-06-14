@@ -36,7 +36,7 @@ def upper_file():
         label.config(text=f"{''.join(new_list)}")
         read_file.close()
     except FileNotFoundError:
-        tk.messagebox.showerror(title="No File Is Open", message="No file currently selected by the app")
+        tk.messagebox.showerror(title="No File Is Open...", message="No file currently selected by the app.")
     else:
         tk.messagebox.showinfo(title="Notice", message="Changes of the file must be saved.")
 
@@ -48,7 +48,7 @@ def save_file():
         write_file.close()
         label.config(text="File saved.")
     except FileNotFoundError:
-        tk.messagebox.showerror(title="No File Is Open", message="No file currently selected by the app")
+        tk.messagebox.showerror(title="No File Is Open...", message="No file currently selected by the app.")
 
 def help_option():
     label.config(text='''All the menu selections are at the top. In the File menu,\n
