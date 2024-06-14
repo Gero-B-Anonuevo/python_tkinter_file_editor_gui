@@ -1,4 +1,7 @@
-ANNA
-ELSA
-OLAF
-SNOW
+anna
+elsa
+olaf
+malphite
+obsidian
+ender dragon
+wyvern
